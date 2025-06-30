@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WireGuard Mesh Network Configuration Generator</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+            <a href="../" class="nav-link">← Hub-and-Spoke Generator</a>
+        </div>
+        
+        <h1>WireGuard Mesh Network Configuration Generator</h1>
+        
+        <div class="privacy-disclaimer">
+            <strong>Privacy Notice:</strong> All configuration generation and cryptographic operations are performed entirely in your browser. No data is transmitted to any server - your keys, configurations, and settings remain completely private and local to your device.
+        </div>
+        
+        <p class="description">Generate a full mesh WireGuard configuration where every peer can communicate directly with every other peer.</p>
+        
+        <form id="meshConfigForm">
+            <div class="form-section">
+                <h3>Network Settings</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="networkCIDR">Network CIDR:</label>
+                        <input type="text" id="networkCIDR" value="10.0.0.0/24" pattern="^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}\/([1-2]?[0-9]|3[0-2])$" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dns">DNS Servers (optional):</label>
+                        <input type="text" id="dns" placeholder="e.g. 8.8.8.8, 1.1.1.1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Peer Configuration</h3>
+                <div class="form-group">
+                    <label for="peerCount">Number of Peers:</label>
+                    <input type="number" id="peerCount" value="3" min="2" max="20" required>
+                    <button type="button" id="updatePeersBtn" onclick="updatePeerFields()">Update Peer Fields</button>
+                </div>
+            </div>
+
+            <div id="peerFields" class="form-section">
+                <h3>Peer Details</h3>
+                <div id="peerInputs"></div>
+            </div>
+            
+            <div class="seed-section">
+                <label>Cryptographic Seed (for reproducible key generation):</label>
+                <div class="seed-display" id="seedDisplay">Click "Generate New Seed" or "Generate Configurations" to create a seed</div>
+                <div class="seed-buttons">
+                    <button type="button" class="seed-btn" onclick="generateNewSeed()">Generate New Seed</button>
+                    <button type="button" class="seed-btn" onclick="copySeed()">Copy Seed</button>
+                    <button type="button" class="seed-btn" onclick="pasteSeed()">Paste Seed</button>
+                </div>
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="customSeed">Custom Seed (paste hex string to reuse):</label>
+                    <input type="text" id="customSeed" placeholder="Enter 64-character hex string or leave empty for random">
+                </div>
+            </div>
+            
+            <button type="button" onclick="generateMeshConfigs()">Generate Mesh Configurations</button>
+        </form>
+        
+        <div id="configOutput" class="config-output" style="display: none;">
+            <div class="config-section">
+                <h3>Mesh Network Configurations</h3>
+                <div class="client-configs-row" id="meshConfigs"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>License</h4>
+                <p>MIT License</p>
+            </div>
+            <div class="footer-column">
+                <h4>Open Source</h4>
+                <p><a href="https://git.ittavern.com/CaffeineFueled/wireguard-config-generator">Repository</a></p>
+            </div>
+            <div class="footer-column">
+                <h4>Disclaimer</h4>
+                <p>WireGuard® is a registered trademark of Jason A. Donenfeld. This generator is not affiliated with the official WireGuard project.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../static/script.js"></script>
+</body>
+</html>
