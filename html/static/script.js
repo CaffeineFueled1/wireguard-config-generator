@@ -502,6 +502,37 @@ function downloadConfig(name, content) {
     window.URL.revokeObjectURL(url);
 }
 
+function downloadAllConfigs() {
+    if (!currentConfigs) {
+        alert('No configurations to download. Please generate configurations first.');
+        return;
+    }
+
+    // Download server config first
+    downloadConfig('server', currentConfigs.server);
+
+    // Download each client config with a small delay to prevent browser blocking
+    currentConfigs.clients.forEach((client, index) => {
+        setTimeout(() => {
+            downloadConfig(client.name, client.config);
+        }, (index + 1) * 100); // 100ms delay between each download
+    });
+}
+
+function downloadAllMeshConfigs() {
+    if (!currentMeshConfigs) {
+        alert('No configurations to download. Please generate configurations first.');
+        return;
+    }
+
+    // Download each peer config with a small delay to prevent browser blocking
+    currentMeshConfigs.forEach((peerConfig, index) => {
+        setTimeout(() => {
+            downloadConfig(peerConfig.name, peerConfig.config);
+        }, index * 100); // 100ms delay between each download
+    });
+}
+
 // Seed management functions
 function generateNewSeed() {
     const seed = crypto.generateSeed();
