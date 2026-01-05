@@ -338,10 +338,10 @@ async function generateConfigs() {
             const clientPrivateKey = await crypto.generatePrivateKey(seed);
             const clientPublicKey = crypto.generatePublicKey(clientPrivateKey);
             const presharedKey = await crypto.generatePresharedKey(seed);
-            
+
             // Calculate client IP (server gets .1, clients get .2, .3, etc.)
-            const clientIP = `${networkParts[0]}.${networkParts[1]}.${networkParts[2]}.${networkParts[3] + i}`;
-            
+            const clientIP = `${networkParts[0]}.${networkParts[1]}.${networkParts[2]}.${networkParts[3] + i + 1}`;
+
             clients.push({
                 name: `client-${i}`,
                 privateKey: clientPrivateKey,
