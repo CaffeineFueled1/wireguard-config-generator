@@ -52,6 +52,14 @@
                     <input type="text" id="dns" placeholder="e.g. 8.8.8.8, 1.1.1.1">
                 </div>
             </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="allowedIPs">Client AllowedIPs:</label>
+                    <input type="text" id="allowedIPs" value="0.0.0.0/0, ::/0" placeholder="e.g. 0.0.0.0/0, ::/0 or 10.0.0.0/24" required>
+                    <small style="color: #666; display: block; margin-top: 5px;">0.0.0.0/0 routes all traffic through VPN. Use specific subnets for split-tunnel.</small>
+                </div>
+            </div>
             
             <div class="seed-section">
                 <label>Cryptographic Seed (for reproducible key generation):</label>

@@ -285,6 +285,7 @@ async function generateConfigs() {
         const serverEndpoint = document.getElementById('serverEndpoint').value;
         const clientCount = parseInt(document.getElementById('clientCount').value);
         const dns = document.getElementById('dns').value;
+        const allowedIPs = document.getElementById('allowedIPs').value;
 
         // Validate inputs
         if (!validateInputs(serverNetwork, serverEndpoint, clientCount)) {
@@ -356,10 +357,10 @@ async function generateConfigs() {
             `${networkParts[0]}.${networkParts[1]}.${networkParts[2]}.${networkParts[3] + 1}`, 
             cidr, clients);
 
-        const clientConfigs = clients.map(client => 
-            generateClientConfig(client, serverPublicKey, serverEndpoint, serverPort, 
-                `${networkParts[0]}.${networkParts[1]}.${networkParts[2]}.${networkParts[3] + 1}`, 
-                cidr, dns)
+        const clientConfigs = clients.map(client =>
+            generateClientConfig(client, serverPublicKey, serverEndpoint, serverPort,
+                `${networkParts[0]}.${networkParts[1]}.${networkParts[2]}.${networkParts[3] + 1}`,
+                cidr, dns, allowedIPs)
         );
 
         // Store configurations
@@ -439,28 +440,28 @@ AllowedIPs = ${client.ip}/32
     return config;
 }
 
-function generateClientConfig(client, serverPublicKey, serverEndpoint, serverPort, serverIP, cidr, dns) {
+function generateClientConfig(client, serverPublicKey, serverEndpoint, serverPort, serverIP, cidr, dns, allowedIPs) {
     let config = `# ${client.name} Configuration
 [Interface]
 PrivateKey = ${client.privateKey}
 Address = ${client.ip}/${cidr}`;
-    
+
     // Only add DNS if it's not empty
     if (dns && dns.trim()) {
         config += `
 DNS = ${dns.trim()}`;
     }
-    
+
     config += `
 
 [Peer]
 PublicKey = ${serverPublicKey}
 PresharedKey = ${client.presharedKey}
-AllowedIPs = 0.0.0.0/0, ::/0
+AllowedIPs = ${allowedIPs}
 Endpoint = ${serverEndpoint}:${serverPort}
 PersistentKeepalive = 25
 `;
-    
+
     return config;
 }
 
@@ -643,6 +644,7 @@ async function generateMeshConfigs() {
     try {
         const networkCIDR = document.getElementById('networkCIDR').value;
         const dns = document.getElementById('dns').value;
+        const allowedIPs = document.getElementById('allowedIPs').value;
         const peerCount = parseInt(document.getElementById('peerCount').value);
 
         // Validate inputs
@@ -728,7 +730,7 @@ async function generateMeshConfigs() {
         // Generate configurations for each peer
         const meshConfigs = peers.map((peer, index) => ({
             name: peer.name,
-            config: generateMeshPeerConfig(peer, peers, index, cidr, dns, presharedKeys)
+            config: generateMeshPeerConfig(peer, peers, index, cidr, dns, presharedKeys, allowedIPs)
         }));
 
         // Store configurations
@@ -769,7 +771,7 @@ function validateMeshInputs(networkCIDR, peerCount) {
     return true;
 }
 
-function generateMeshPeerConfig(currentPeer, allPeers, currentIndex, cidr, dns, presharedKeys) {
+function generateMeshPeerConfig(currentPeer, allPeers, currentIndex, cidr, dns, presharedKeys, allowedIPs) {
     let config = `# ${currentPeer.name} Configuration (Mesh Network)
 [Interface]
 PrivateKey = ${currentPeer.privateKey}
@@ -798,7 +800,7 @@ ListenPort = ${currentPeer.port}
 [Peer]
 PublicKey = ${peer.publicKey}
 PresharedKey = ${presharedKey}
-AllowedIPs = ${peer.ip}/32`;
+AllowedIPs = ${allowedIPs}`;
 
             // Add endpoint if available
             if (peer.endpoint) {

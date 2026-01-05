@@ -34,6 +34,13 @@
                         <input type="text" id="dns" placeholder="e.g. 8.8.8.8, 1.1.1.1">
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="allowedIPs">Peer AllowedIPs:</label>
+                        <input type="text" id="allowedIPs" value="10.0.0.0/24" placeholder="e.g. 10.0.0.0/24 or 0.0.0.0/0" required>
+                        <small style="color: #666; display: block; margin-top: 5px;">Define which IPs each peer can reach through others. Use network CIDR for mesh-only traffic.</small>
+                    </div>
+                </div>
             </div>
 
             <div class="form-section">
